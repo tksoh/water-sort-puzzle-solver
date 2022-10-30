@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
+	"os"
 	"time"
 
 	watersortpuzzle "github.com/pkositsyn/water-sort-puzzle-solver"
@@ -13,11 +15,26 @@ var algorithmType = flag.String("algorithm", "astar",
 
 func main() {
 	flag.Parse()
+
 	fmt.Println("Input initial puzzle state")
 
 	var initialStateStr string = "JHGFF;CAHEI;FHBBG;DDHEC;IFJGD;ECAAE;JJIFD;BJAHB;DBCII;GECAG;;"
+	var puzzleInputFile string = "puzzles.txt"
 
-	if initialStateStr == "" {
+	readFile, err := os.Open(puzzleInputFile)
+
+	if err == nil {
+		fileScanner := bufio.NewScanner(readFile)
+
+		fileScanner.Split(bufio.ScanLines)
+
+		for fileScanner.Scan() {
+			line := fileScanner.Text()
+			fmt.Printf("\nSolving puzzle: %s\n", line)
+			doSolvePuzzle(getSolver(*algorithmType), line)
+		}
+
+	} else if initialStateStr == "" {
 		n, err := fmt.Scanln(&initialStateStr)
 		if err != nil {
 			fmt.Printf("Error getting input: %s\n", err.Error())
@@ -27,10 +44,16 @@ func main() {
 			fmt.Printf("Scanned %d values but needed one position\n", n)
 			return
 		}
+		doSolvePuzzle(getSolver(*algorithmType), initialStateStr)
+	} else {
+		doSolvePuzzle(getSolver(*algorithmType), initialStateStr)
 	}
+}
 
+func getSolver(algo string) watersortpuzzle.Solver {
 	var solver watersortpuzzle.Solver
-	switch *algorithmType {
+
+	switch algo {
 	case "astar":
 		solver = watersortpuzzle.NewAStarSolver()
 	case "idastar":
@@ -38,6 +61,11 @@ func main() {
 	case "dijkstra":
 		solver = watersortpuzzle.NewDijkstraSolver()
 	}
+
+	return solver
+}
+
+func doSolvePuzzle(solver watersortpuzzle.Solver, initialStateStr string) {
 
 	var initialState watersortpuzzle.State
 	if err := initialState.FromString(initialStateStr); err != nil {
@@ -55,7 +83,8 @@ func main() {
 
 	suffix := ""
 	if statsSolver, ok := solver.(watersortpuzzle.SolverWithStats); ok {
-		suffix = fmt.Sprintf(" Algorithm took %d iterations to find solution.", statsSolver.Stats().Steps)
+		suffix = fmt.Sprintf(" Algorithm took %d iterations to find solution.",
+			statsSolver.Stats().Steps)
 	}
 
 	fmt.Printf("Puzzle solved in %d steps!%s\n", len(steps), suffix)
