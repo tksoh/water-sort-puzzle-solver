@@ -14,15 +14,18 @@ func main() {
 	flag.Parse()
 	fmt.Println("Input initial puzzle state")
 
-	var initialStateStr string
-	n, err := fmt.Scanln(&initialStateStr)
-	if err != nil {
-		fmt.Printf("Error getting input: %s\n", err.Error())
-		return
-	}
-	if n != 1 {
-		fmt.Printf("Scanned %d values but needed one position\n", n)
-		return
+	var initialStateStr string = "OBBB;BOOO;"
+
+	if initialStateStr == "" {
+		n, err := fmt.Scanln(&initialStateStr)
+		if err != nil {
+			fmt.Printf("Error getting input: %s\n", err.Error())
+			return
+		}
+		if n != 1 {
+			fmt.Printf("Scanned %d values but needed one position\n", n)
+			return
+		}
 	}
 
 	var solver watersortpuzzle.Solver
