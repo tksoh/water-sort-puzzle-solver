@@ -60,7 +60,9 @@ func main() {
 
 	fmt.Printf("Puzzle solved in %d steps!%s\n", len(steps), suffix)
 	fmt.Printf("Solution took: %v\n", duration)
+	count := 1
 	for _, step := range steps {
-		fmt.Println(step.From+1, step.To+1)
+		fmt.Println("Step", count, ":", step.From+1, "->", step.To+1)
+		count++
 	}
 }
