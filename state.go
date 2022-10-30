@@ -185,7 +185,11 @@ func (s *State) FromString(str string) error {
 	flasksStrs := strings.Split(str, string(invalidColor))
 	*s = make(State, len(flasksStrs))
 	for i, fStr := range flasksStrs {
-		if err := (*s)[i].FromString(fStr); err != nil {
+		reset := true
+		if i > 0 {
+			reset = false
+		}
+		if err := (*s)[i].FromString(fStr, reset); err != nil {
 			return fmt.Errorf("cannot initialize flask from string: %w", err)
 		}
 	}

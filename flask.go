@@ -19,10 +19,12 @@ const (
 	invalidColor Color = ';'
 
 	// waterPiecesPerFlask must be > 0.
-	waterPiecesPerFlask = 5
+	waterPiecesPerFlask = 100
 )
 
 type Flask [waterPiecesPerFlask]Color
+
+var flaskSize int = 1
 
 func (f *Flask) Size() int {
 	for i, c := range f {
@@ -30,15 +32,19 @@ func (f *Flask) Size() int {
 			return i
 		}
 	}
-	return len(f)
+	return flaskSize
 }
 
 func (f *Flask) Left() int {
-	return len(f) - f.Size()
+	return flaskSize - f.Size()
 }
 
 func (f *Flask) IsFull() bool {
-	return f[len(f)-1] != colorNone
+	full := f[flaskSize-1] != colorNone
+	if full {
+		// println("is full")
+	}
+	return full
 }
 
 func (f *Flask) IsEmpty() bool {
@@ -70,7 +76,7 @@ func (f *Flask) IsFinished() bool {
 		return false
 	}
 
-	for i := 1; i < len(f); i++ {
+	for i := 1; i < flaskSize; i++ {
 		if f[i] != f[i-1] {
 			return false
 		}
@@ -135,7 +141,7 @@ func (f *Flask) String() string {
 
 // FromString initializes flask from string.
 // String mustn't contain ';' and empty rune.
-func (f *Flask) FromString(s string) error {
+func (f *Flask) FromString(s string, reset bool) error {
 	if len(s) > waterPiecesPerFlask {
 		return fmt.Errorf("cannot initialize flask of capacity %d from %q", waterPiecesPerFlask, s)
 	}
@@ -147,5 +153,12 @@ func (f *Flask) FromString(s string) error {
 		}
 		f[i] = clr
 	}
+
+	if reset {
+		flaskSize = 0
+	} else if len(s) > flaskSize {
+		flaskSize = len(s)
+	}
+
 	return nil
 }
