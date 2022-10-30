@@ -31,7 +31,7 @@ func main() {
 		for fileScanner.Scan() {
 			line := fileScanner.Text()
 			fmt.Printf("\nSolving puzzle: %s\n", line)
-			doSolvePuzzle(getSolver(*algorithmType), line)
+			doSolvePuzzle(getSolver(*algorithmType), line, false)
 		}
 
 	} else if initialStateStr == "" {
@@ -44,9 +44,9 @@ func main() {
 			fmt.Printf("Scanned %d values but needed one position\n", n)
 			return
 		}
-		doSolvePuzzle(getSolver(*algorithmType), initialStateStr)
+		doSolvePuzzle(getSolver(*algorithmType), initialStateStr, true)
 	} else {
-		doSolvePuzzle(getSolver(*algorithmType), initialStateStr)
+		doSolvePuzzle(getSolver(*algorithmType), initialStateStr, true)
 	}
 }
 
@@ -65,7 +65,7 @@ func getSolver(algo string) watersortpuzzle.Solver {
 	return solver
 }
 
-func doSolvePuzzle(solver watersortpuzzle.Solver, initialStateStr string) {
+func doSolvePuzzle(solver watersortpuzzle.Solver, initialStateStr string, verbose bool) {
 
 	var initialState watersortpuzzle.State
 	if err := initialState.FromString(initialStateStr); err != nil {
@@ -89,9 +89,12 @@ func doSolvePuzzle(solver watersortpuzzle.Solver, initialStateStr string) {
 
 	fmt.Printf("Puzzle solved in %d steps!%s\n", len(steps), suffix)
 	fmt.Printf("Solution took: %v\n", duration)
-	count := 1
-	for _, step := range steps {
-		fmt.Println("Step", count, ":", step.From+1, "->", step.To+1)
-		count++
+
+	if verbose {
+		count := 1
+		for _, step := range steps {
+			fmt.Println("Step", count, ":", step.From+1, "->", step.To+1)
+			count++
+		}
 	}
 }
