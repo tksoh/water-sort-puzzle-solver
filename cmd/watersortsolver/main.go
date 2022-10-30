@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"time"
 
 	watersortpuzzle "github.com/pkositsyn/water-sort-puzzle-solver"
 )
@@ -44,7 +45,9 @@ func main() {
 		return
 	}
 
+	t0 := time.Now()
 	steps, err := solver.Solve(initialState)
+	duration := time.Since(t0)
 	if err != nil {
 		fmt.Printf("Cannot solve puzzle: %s\n", err.Error())
 		return
@@ -56,6 +59,7 @@ func main() {
 	}
 
 	fmt.Printf("Puzzle solved in %d steps!%s\n", len(steps), suffix)
+	fmt.Printf("Solution took: %v\n", duration)
 	for _, step := range steps {
 		fmt.Println(step.From+1, step.To+1)
 	}
