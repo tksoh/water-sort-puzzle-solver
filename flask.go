@@ -19,7 +19,7 @@ const (
 	invalidColor Color = ';'
 
 	// waterPiecesPerFlask must be > 0.
-	waterPiecesPerFlask = 4
+	waterPiecesPerFlask = 5
 )
 
 type Flask [waterPiecesPerFlask]Color

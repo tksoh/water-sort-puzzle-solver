@@ -14,7 +14,7 @@ func main() {
 	flag.Parse()
 	fmt.Println("Input initial puzzle state")
 
-	var initialStateStr string = "OBBB;BOOO;"
+	var initialStateStr string = "JHGFF;CAHEI;FHBBG;DDHEC;IFJGD;ECAAE;JJIFD;BJAHB;DBCII;GECAG;;"
 
 	if initialStateStr == "" {
 		n, err := fmt.Scanln(&initialStateStr)
