@@ -28,10 +28,12 @@ func main() {
 
 		fileScanner.Split(bufio.ScanLines)
 
+		lineNum := 1
 		for fileScanner.Scan() {
 			line := fileScanner.Text()
-			fmt.Printf("\nSolving puzzle: %s\n", line)
+			fmt.Printf("\nSolving puzzle #%d: %s\n", lineNum, line)
 			doSolvePuzzle(getSolver(*algorithmType), line, false)
+			lineNum++
 		}
 
 	} else if initialStateStr == "" {
