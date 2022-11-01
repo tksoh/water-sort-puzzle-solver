@@ -184,12 +184,33 @@ func (s State) EquivalentString() string {
 func (s *State) FromString(str string) error {
 	flasksStrs := strings.Split(str, string(invalidColor))
 	*s = make(State, len(flasksStrs))
-	for i, fStr := range flasksStrs {
-		reset := true
-		if i > 0 {
-			reset = false
+
+	// set flask size base on the board string
+	cnt := 0
+	empty := 0
+	for _, fStr := range flasksStrs {
+		cnt += len(fStr)
+		if len(fStr) == 0 {
+			empty++
 		}
-		if err := (*s)[i].FromString(fStr, reset); err != nil {
+	}
+
+	cap := 0
+	for i := len(flasksStrs); i > 0; i-- {
+		if cnt%i == 0 {
+			cap = cnt / i
+			SetFlaskCap(cap)
+			break
+		}
+	}
+
+	if cap <= 0 {
+		return fmt.Errorf("cannot initialize flask from string: unable to determine flask size")
+	}
+
+	// create flasks
+	for i, fStr := range flasksStrs {
+		if err := (*s)[i].FromString(fStr, false); err != nil {
 			return fmt.Errorf("cannot initialize flask from string: %w", err)
 		}
 	}

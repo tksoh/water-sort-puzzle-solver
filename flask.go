@@ -24,7 +24,11 @@ const (
 
 type Flask [waterPiecesPerFlask]Color
 
-var flaskSize int = 1
+var flaskCap int
+
+func SetFlaskCap(cap int) {
+	flaskCap = cap
+}
 
 func (f *Flask) Size() int {
 	for i, c := range f {
@@ -32,18 +36,15 @@ func (f *Flask) Size() int {
 			return i
 		}
 	}
-	return flaskSize
+	return flaskCap
 }
 
 func (f *Flask) Left() int {
-	return flaskSize - f.Size()
+	return flaskCap - f.Size()
 }
 
 func (f *Flask) IsFull() bool {
-	full := f[flaskSize-1] != colorNone
-	if full {
-		// println("is full")
-	}
+	full := f[flaskCap-1] != colorNone
 	return full
 }
 
@@ -76,7 +77,7 @@ func (f *Flask) IsFinished() bool {
 		return false
 	}
 
-	for i := 1; i < flaskSize; i++ {
+	for i := 1; i < flaskCap; i++ {
 		if f[i] != f[i-1] {
 			return false
 		}
@@ -152,12 +153,6 @@ func (f *Flask) FromString(s string, reset bool) error {
 			return errors.New("invalid color provided")
 		}
 		f[i] = clr
-	}
-
-	if reset {
-		flaskSize = 0
-	} else if len(s) > flaskSize {
-		flaskSize = len(s)
 	}
 
 	return nil
