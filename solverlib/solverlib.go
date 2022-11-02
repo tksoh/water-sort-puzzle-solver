@@ -1,6 +1,7 @@
 package solverlib
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -30,4 +31,31 @@ func (p *PuzzleSolver) DoSolvePuzzle(initialStateStr string) bool {
 	}
 	fmt.Printf("Solution took: %v in %d steps\n", duration, len(steps))
 	return true
+}
+
+func (p *PuzzleSolver) GetPuzzleSolution(initialStateStr string) string {
+	solver := watersortpuzzle.NewAStarSolver()
+
+	var initialState watersortpuzzle.State
+	if err := initialState.FromString(initialStateStr); err != nil {
+		fmt.Printf("Invalid puzzle state provided: %s\n", err.Error())
+		return ""
+	}
+
+	t0 := time.Now()
+	steps, err := solver.Solve(initialState)
+	duration := time.Since(t0)
+	if err != nil {
+		fmt.Printf("Cannot solve puzzle: %s\n", err.Error())
+		return ""
+	}
+	fmt.Printf("Solution took: %v in %d steps\n", duration, len(steps))
+
+	jsonStr, err := json.Marshal(steps)
+	if err != nil {
+		fmt.Println("error:", err)
+		return ""
+	}
+
+	return string(jsonStr)
 }
