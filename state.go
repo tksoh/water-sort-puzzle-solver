@@ -196,7 +196,7 @@ func (s *State) FromString(str string) error {
 	}
 
 	cap := 0
-	for i := len(flasksStrs); i > 0; i-- {
+	for i := len(flasksStrs) - 1; i > 0; i-- {
 		if cnt%i == 0 {
 			cap = cnt / i
 			SetFlaskCap(cap)
