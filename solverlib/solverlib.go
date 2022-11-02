@@ -51,11 +51,14 @@ func (p *PuzzleSolver) GetPuzzleSolution(initialStateStr string) string {
 	}
 	fmt.Printf("Solution took: %v in %d steps\n", duration, len(steps))
 
-	jsonStr, err := json.Marshal(steps)
-	if err != nil {
-		fmt.Println("error:", err)
-		return ""
+	if len(steps) > 0 {
+		jsonStr, err := json.Marshal(steps)
+		if err != nil {
+			fmt.Println("error:", err)
+			return ""
+		}
+		return string(jsonStr)
+	} else {
+		return "[]"
 	}
-
-	return string(jsonStr)
 }
