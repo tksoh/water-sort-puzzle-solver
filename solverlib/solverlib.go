@@ -62,3 +62,45 @@ func (p *PuzzleSolver) GetPuzzleSolution(initialStateStr string) string {
 		return "[]"
 	}
 }
+
+func (p *PuzzleSolver) GetPuzzleSolutionMap(initialStateStr string) string {
+	solver := watersortpuzzle.NewAStarSolver()
+
+	var initialState watersortpuzzle.State
+	if err := initialState.FromString(initialStateStr); err != nil {
+		fmt.Printf("Invalid puzzle state provided: %s\n", err.Error())
+		jsonStr := makeSolutionJson("invalid", 0, nil, err.Error())
+		return jsonStr
+	}
+
+	t0 := time.Now()
+	steps, err := solver.Solve(initialState)
+	duration := time.Since(t0)
+	if err != nil {
+		fmt.Printf("Cannot solve puzzle: %s\n", err.Error())
+		jsonStr := makeSolutionJson("unsolved", duration, nil, err.Error())
+		return jsonStr
+	}
+
+	fmt.Printf("Solution took: %v in %d steps\n", duration, len(steps))
+	jsonStr := makeSolutionJson("solved", duration, steps, "")
+	return jsonStr
+}
+
+func makeSolutionJson(status string, duration time.Duration,
+	steps []watersortpuzzle.Step, error string) string {
+	dataMap := map[string]interface{}{
+		"status":   status,
+		"duration": duration,
+		"steps":    steps,
+		"message":  error,
+	}
+
+	jsonStr, err := json.Marshal(dataMap)
+	if err != nil {
+		fmt.Println("error:", err)
+		return ""
+	}
+
+	return string(jsonStr)
+}
