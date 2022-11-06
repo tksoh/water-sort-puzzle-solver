@@ -83,6 +83,13 @@ func (p *PuzzleSolver) GetPuzzleSolutionMap(initialStateStr string) string {
 	}
 
 	fmt.Printf("Solution took: %v in %d steps\n", duration, len(steps))
+
+	if verifySolution(initialState, steps) {
+		fmt.Printf("Solution verification PASS!\n")
+	} else {
+		fmt.Printf("Solution verification FAIL!\n")
+	}
+
 	jsonStr := makeSolutionJson("solved", duration, steps, "")
 	return jsonStr
 }
@@ -103,4 +110,19 @@ func makeSolutionJson(status string, duration time.Duration,
 	}
 
 	return string(jsonStr)
+}
+
+func verifySolution(initialState watersortpuzzle.State, steps []watersortpuzzle.Step) bool {
+	var err error
+	state := initialState
+	count := 0
+	for _, step := range steps {
+		if state, err = state.Step(step); err != nil {
+			fmt.Printf("Verification FAIL at Step #%d: [%d] -> [%d]\n", count, step.From+1, step.To+1)
+			return false
+		}
+		count++
+	}
+
+	return state.IsTerminal()
 }

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	watersortpuzzle "github.com/pkositsyn/water-sort-puzzle-solver"
+	"github.com/pkositsyn/water-sort-puzzle-solver/solverlib"
 )
 
 var algorithmType = flag.String("algorithm", "astar",
@@ -74,6 +75,10 @@ func doSolvePuzzle(solver watersortpuzzle.Solver, initialStateStr string, verbos
 		fmt.Printf("Invalid puzzle state provided: %s\n", err.Error())
 		return
 	}
+
+	var newSolver solverlib.PuzzleSolver
+	result := newSolver.GetPuzzleSolutionMap(initialStateStr)
+	fmt.Printf("DoSolvePuzzle result: %s\n", result)
 
 	t0 := time.Now()
 	steps, err := solver.Solve(initialState)
