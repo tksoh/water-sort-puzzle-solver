@@ -88,6 +88,8 @@ func (p *PuzzleSolver) GetPuzzleSolutionMap(initialStateStr string) string {
 		fmt.Printf("Solution verification PASS!\n")
 	} else {
 		fmt.Printf("Solution verification FAIL!\n")
+		jsonStr := makeSolutionJson("error", duration, steps, "Verification failed")
+		return jsonStr
 	}
 
 	jsonStr := makeSolutionJson("solved", duration, steps, "")
