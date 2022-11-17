@@ -185,28 +185,24 @@ func (s *State) FromString(str string) error {
 	flasksStrs := strings.Split(str, string(invalidColor))
 	*s = make(State, len(flasksStrs))
 
-	// set flask size base on the board string
-	cnt := 0
-	empty := 0
-	for _, fStr := range flasksStrs {
-		cnt += len(fStr)
-		if len(fStr) == 0 {
-			empty++
+	// set flask size based on the board string
+	var cmap = make(map[string]int)
+	for _, r := range flasksStrs {
+		for _, c := range r {
+			cmap[string(c)]++
 		}
 	}
-
-	cap := 0
-	for i := len(flasksStrs) - 1; i > 0; i-- {
-		if cnt%i == 0 {
-			cap = cnt / i
-			SetFlaskCap(cap)
-			break
-		}
+	values := make([]int, 0, len(cmap))
+	for _, v := range cmap {
+		values = append(values, v)
 	}
 
+	sort.Ints(values)
+	cap := values[len(values)-1]
 	if cap <= 0 {
 		return fmt.Errorf("cannot initialize flask from string: unable to determine flask size")
 	}
+	SetFlaskCap(cap)
 
 	// create flasks
 	for i, fStr := range flasksStrs {
